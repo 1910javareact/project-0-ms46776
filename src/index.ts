@@ -26,7 +26,7 @@ app.post('/login', (req, res) => {
     try {
         const user = getUserByUsernameAndPassword(username, password);
         req.session.user = user;
-        res.json(user); // its standard to send the logged in user info after the log in
+        res.json(user); 
     } catch (e) {
         res.status(e.status).send(e.message);
     }

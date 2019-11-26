@@ -1,6 +1,5 @@
 import express from "express"
 
-import { getUserId } from '../services/user-services'
 
 
 import { authorization } from "../middleware/authorization-middleware"

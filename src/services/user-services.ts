@@ -6,7 +6,7 @@ export async function getUserByUsernameAndPassword(username: string, password: s
     try {
     return await daoGetUserByUsernameAndPassword(username, password)
 } catch (e) {
-    throw e
+    throw (e)
 }
 }
 
@@ -14,7 +14,7 @@ export async function GetAlluser(): Promise<User[]> {
     try {
     return await daoGetAlluser()
 } catch (e) {
-    throw e
+    throw (e)
 }
 }
 

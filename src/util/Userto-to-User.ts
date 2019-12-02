@@ -1,31 +1,24 @@
-import { UserDTO } from "../dtos/user";
+import { UserDTO } from '../dtos/user';
 
-import { User } from "../models/User";
+import { User } from '../models/user';
 
 
 export function userDTOtoUser(uD: UserDTO[]): User {
-const roles = [];
-for (const u of uD) {
-    roles.push({roleId: u.role_id,
-                role: u.role_title
-            })
-}
+
 return new User (
-    uD[0].user_id,
-    uD[0].user_name,
+    uD[0].userid,
+    uD[0].username,
     uD[0].password,
-    uD[0].first_name,
-    uD[0].last_name,
-    uD[0].email,
-    roles);
+    uD[0].firstname,
+    uD[0].lastname,
+    uD[0].email ,
+    uD[0].role);
 }
 export function multiUserDTOUser(uD: UserDTO[]): User[] {
     let currentUser: UserDTO[] = [];
     const result: User[] = [];
     for (const u of uD) {
         if (currentUser.length === 0) {
-            currentUser.push(u);
-        } else if (currentUser[0].user_id === u.user_id) {
             currentUser.push(u);
         } else {
             result.push(userDTOtoUser(currentUser));

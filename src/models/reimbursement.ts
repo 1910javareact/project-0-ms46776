@@ -1,6 +1,6 @@
-export class reimbursement {
+export class Reimbursement {
 
-    reimbursementId: number; // primary key
+  reimbursementId: number; // primary key
 	author: number; // foreign key -> User, not null
 	amount: number;  // not null
   dateSubmitted: number; // not null

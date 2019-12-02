@@ -1,10 +1,11 @@
+
+
 export class UserDTO {
-    user_id: number;
-    user_name: string;
+    userid: number;
+    username: string;
     password: string;
-    first_name: string;
-    last_name: string;
+    firstname: string;
+    lastname: string;
     email: string ;
-    role_id: number;
-    role_title: number;
+    role: number ;
 }

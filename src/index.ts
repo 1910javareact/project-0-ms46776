@@ -7,30 +7,32 @@ import { reimbursementRouter } from './routers/reimbursement-router';
 import { sessionMiddleware } from './middleware/session-middleware';
 import { getUserByUsernameAndPassword } from './services/user-services';
 import { userRouter } from './routers/user-router';
+// import { loggingMiddleware } from './middleware/logging-middleware';
 
 
 const app = express();
 
 
 app.use(bodyParser.json());
+//app.use(loggingMiddleware);
 app.use(sessionMiddleware);
 
 app.use('/user', userRouter );
 app.use('/reimbursements', reimbursementRouter);
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const {username, password} = req.body;
-    if (!username || !password ) {
-        res.status(400).send('please have a username and password field');
-    }
+    // if (!username || !password ) {
+    //     res.status(400).send('please have a username and password field');
+
+    // } else {
     try {
-        const user = getUserByUsernameAndPassword(username, password);
-        req.session.user = user;
-        res.json(user); 
+        const user = await getUserByUsernameAndPassword(username, password);
+        res.json(user);
     } catch (e) {
         res.status(e.status).send(e.message);
-    }
-});
+
+    }});
 
 
 app.listen(9001, () => {

@@ -1,88 +1,109 @@
-import express from "express"
+import express from 'express';
+import * as reimbursementServices from '../services/reimbursement-services';
 
+// import { authorization } from '../middleware/authorization-middleware';
+import { getReimbursementsByStatusId, getReimbursementsByUserId } from '../services/reimbursement-services';
+import { Reimbursement } from '../models/reimbursement';
 
-
-import { authorization } from "../middleware/authorization-middleware"
-import { getReimbursementsByStatusId, getReimbursementsByUserId, patchReimbersement } from "../services/reimbursement-services"
-
-export const reimbursementRouter = express.Router()
+export const reimbursementRouter = express.Router();
 //get reimbursement by status
-reimbursementRouter.get('/status/:statusId',authorization([1]), async (req,res) =>{  
-      let statusId = +req.params.statusId
-    if(isNaN(statusId)){
-        res.status(400).send('Invalid ID')
+reimbursementRouter.get('/status/:statusId', //authorization([1]), 
+async (req, res) => {
+      const statusId = +req.params.statusId;
+    if (isNaN(statusId)) {
+        res.status(400).send('Invalid ID');
     }
-    else{ 
+    else {
         try {
-            let reimbursements = await getReimbursementsByStatusId(statusId)
-        res.json(reimbursements)
+            const reimbursements = await getReimbursementsByStatusId(statusId);
+        res.json(reimbursements);
         }
-        catch(e){
-            res.status(e.status).send(e.message)
+        catch (e) {
+            res.status(e.status).send(e.message);
         }
     }
-})
+});
 
 //get reimbursement by user
 
-reimbursementRouter.get('/author/userId/:userId',authorization([1]), async (req,res) =>{
-    let userId = +req.params.userId
-    if(isNaN(userId)){
-        res.status(400).send('Invalid ID')
+reimbursementRouter.get('/user/:userId', // 
+async (req, res) => {
+    const userId = +req.params.userId;
+    if (isNaN(userId)) {
+        res.status(400).send('Invalid ID');
     }
-    else{
-        try{
-            let reimbursements = await getReimbursementsByUserId(userId)
-        res.json(reimbursements)
-        }catch(e){
-            res.status(e.status).send(e.message)
+    else {
+        try {
+            const reimbursements = await getReimbursementsByUserId(userId);
+        res.json(reimbursements);
+        } catch (e) {
+            res.status(e.status).send(e.message);
         }
 
     }
 
-})
+});
 
 //submit reimbursement
 
-    reimbursementRouter.post('', authorization([1,2,3]), async (req, res)=>{
-        let {body} = req
-        let singleReimbursement = {
-            author: req.session.user.userId,
-            amount: body.amount,
-            description: body.description,
-            type: body.type
-        }
-        for(let key in singleReimbursement){
-            if(!singleReimbursement[key]){
-                res.status(400).send('Please include all fields')
-            }
-        }
-        try{
-            let newReimbursement = await patchReimbersement(singleReimbursement)
-          res.status(201).json(newReimbursement)
-        }
-        catch(e){
-           res.status(e.status).send(e.message)
-        }
-    })
-
-    reimbursementRouter.patch('', authorization([1]),
-    async (req, res) => {
-        let { body } = req
-        let patch = {
-            reimbursementId: body.reimbursementId,
-            resolver: req.session.user.userId,
-            status: body.status
-        }
-        for (let key in patch) {
-            if (!patch[key]) {
-                res.status(400).send('Please include a status and reimbursement Id')
+    reimbursementRouter.post('', async (req, res) => {
+        const{body} = req;
+        const newR = new Reimbursement (0, 0, 0, 0, 0, ``, 0, 0, 0);
+        console.log(req.body.description);
+        console.log(req.body.author);
+        
+                
+        for (const key in newR) {
+            if (!req.body[key]) {
+                res.status(400).send(`Please include all required fields`);
+                break;
+            } else {
+                newR[key] = body[key];
             }
         }
         try {
-            let newPost = await patchReimbersement(patch)
-            res.status(201).json(newPost)
-        } catch (e) {
-            res.status(e.status).send(e.message)
+            const result = await reimbursementServices.postReimbersement(newR);
+            if (result != undefined) {
+                res.status(201).json('created');
         }
-    })
+    } catch (e) {
+           res.status(e.status).send(e.message);
+        }
+    });
+
+    reimbursementRouter.patch('',
+    async (req, res) => {
+        const { body } = req;
+
+        const reimburse = new Reimbursement (0, 0, 0, 0, 0, ``, 0, 0, 0);
+for (const key in reimburse) {
+        reimburse[key] = body[key];
+    }
+const id = reimburse.reimbursementId;
+if (isNaN(id)) {
+    res.status(400).send(`Please enter a valid reimbursement id`);
+}
+try {
+    const result = await reimbursementServices.patchReimbersement(reimburse);
+    res.status(201).json(result);
+} catch (e) {
+    res.status(e.status).send(e.message);
+}
+});
+    //     const patch = {
+    //         reimbursementId: body.reimbursementId,
+    //         // resolver: req.session.user.userId,
+    //         status: body.status
+    //     };
+    //     // for (const key in patch) {
+    //     //     if (!patch[key]) {
+    //     //         res.status(400).send('Please include a status and reimbursement Id');
+    //     //     }
+    //     // }
+    //     try {
+    //         const newPost = await patchReimbersement(patch);
+    //         res.status(201).json(newPost);
+    //     } catch (e) {
+    //         res.status(e.status).send(e.message);
+    //     }
+    // });

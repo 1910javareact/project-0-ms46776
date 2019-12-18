@@ -8,12 +8,16 @@ import { sessionMiddleware } from './middleware/session-middleware';
 import { getUserByUsernameAndPassword } from './services/user-services';
 import { userRouter } from './routers/user-router';
 // import { loggingMiddleware } from './middleware/logging-middleware';
-
+import { corsFilter } from './middleware/cors-middleware';
 
 const app = express();
 
 
 app.use(bodyParser.json());
+
+app.use(corsFilter);
+
+
 //app.use(loggingMiddleware);
 app.use(sessionMiddleware);
 

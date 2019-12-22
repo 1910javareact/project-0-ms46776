@@ -7,15 +7,16 @@ import { reimbursementRouter } from './routers/reimbursement-router';
 import { sessionMiddleware } from './middleware/session-middleware';
 import { getUserByUsernameAndPassword } from './services/user-services';
 import { userRouter } from './routers/user-router';
+import { corsLocal } from './middleware/cors-middleware';
 // import { loggingMiddleware } from './middleware/logging-middleware';
-import { corsFilter } from './middleware/cors-middleware';
+
 
 const app = express();
 
 
 app.use(bodyParser.json());
 
-app.use(corsFilter);
+app.use(corsLocal);
 
 
 //app.use(loggingMiddleware);

@@ -3,7 +3,7 @@ import { ReimbursementDTO } from '../dtos/reimbursement';
 
 
 export function reimbursementDTOtoReimbursement(r: ReimbursementDTO[]): Reimbursement {
-    return new Reimbursement(r[0].reimbursement_id, r[0].author, r[0].amount, r[0].date_submitted, r[0].date_resolved, r[0].description, r[0].resolver, r[0].status_id, r[0].type_id);
+    return new Reimbursement(r[0].reimbursementId, r[0].author, r[0].amount, r[0].dateSubmitted, r[0].dateResolved, r[0].description, r[0].resolver, r[0].status, r[0].type);
 }
 
 
